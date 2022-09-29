@@ -7,14 +7,18 @@ import (
 	"time"
 
 	"github.com/Anthonyntilelli/go-fish/deck"
+	"github.com/Anthonyntilelli/go-fish/player"
 )
 
 func main() {
 	rand.Seed(time.Now().UnixNano())
 	d := deck.New()
-	fmt.Println(d)
-	for i := 0; i != 55; i++ {
-		fmt.Println(d.DrawCard())
+	p1 := player.New(1)
+	for i := 0; i != 24; i++ {
+		c, _ := d.DrawCard()
+		p1.InsertCard(c)
 	}
-	fmt.Println(d.IsDeckEmpty())
+	fmt.Println(p1.Hand())
+	fmt.Println(p1.RemoveCards("2"))
+	fmt.Println(p1.Hand())
 }
