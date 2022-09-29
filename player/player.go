@@ -1,3 +1,7 @@
+// Package contains players hand, points and mechanism for point accumulation.
+//
+// Use the `New()` function to ensure proper creation on the Player.
+// Each player should have a different ID.
 package player
 
 import (
@@ -10,6 +14,7 @@ type Player struct {
 	points int
 }
 
+// Returns a Player with the specified id, an empty hand and 0 points.
 func New(id int) Player {
 	var p Player
 	p.Id = id
@@ -32,7 +37,6 @@ func (p *Player) InsertCard(c deck.Card) string {
 }
 
 // Represents the hand as a one line string
-// Example: Q:♥ 3:♣ 8:♦♥ 9:♥♣ 4:♠ 7:♠♥♦ 5:♠
 func (p *Player) Hand() string {
 	str := "[ "
 	for k, v := range p.hand {

@@ -1,3 +1,6 @@
+// Package for managing a standard card deck.
+//
+// Use the `New()` function to create a proper deck
 package deck
 
 import (
@@ -5,6 +8,7 @@ import (
 	"math/rand"
 )
 
+// Suits of Each Card
 const (
 	Clubs    = "♣"
 	Diamonds = "♦"
@@ -15,12 +19,16 @@ const (
 type Card struct {
 	Value, Suit string
 }
+
 type Deck struct {
 	pile        [52]Card
 	spot        int
 	initialized bool
 }
 
+//	Creates and returns a randomized deck full of standard playing cards and suits.
+//
+// rand must be seeded BEFORE running this function
 func New() Deck {
 	var d Deck
 	d.pile = [52]Card{
@@ -38,6 +46,8 @@ func New() Deck {
 	return d
 }
 
+// Draws a card from the deck. Will return an error if there are no cards left or
+// If the deck has not been initialized by the New() function.
 func (d *Deck) DrawCard() (Card, error) {
 	if !d.initialized {
 		return Card{}, errors.New("Deck is not initialized")
@@ -50,6 +60,7 @@ func (d *Deck) DrawCard() (Card, error) {
 	return card, nil
 }
 
+// Return true when all cards have been drawn.
 func (d *Deck) IsDeckEmpty() bool {
 	return d.spot == 52
 }
