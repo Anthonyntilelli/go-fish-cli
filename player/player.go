@@ -22,28 +22,34 @@ type Player struct {
 func New(id uint, starting_hand []deck.Card) (Player, error) {
 	var p Player
 	if id <= 0 || len(starting_hand) == 0 {
-		return p, errors.New("Invalid Player options")
+		return p, errors.New("invalid Player options")
 	}
 	p.Id = id
 	p.points = 0
 	p.hand = make(map[string][]deck.Card)
 	for _, c := range starting_hand {
-		p.InsertCard(c)
+		if _, err := p.InsertCard(c); err != nil {
+			return Player{}, err
+		}
 	}
 	return p, nil
 }
 
 // Inserts a new card into the hand of the player. If the card is part of a 4 set,
 // the cards are removed from the hand and a point is increased. If a 4 set is
-// made, the card value is returned, else "" is returned
-func (p *Player) InsertCard(c deck.Card) string {
+// made, the card value is returned, else "" is returned.
+// Function will return error on empty card values
+func (p *Player) InsertCard(c deck.Card) (string, error) {
+	if c.Value == "" {
+		return "", errors.New("attempting to an insert invalid card")
+	}
 	p.hand[c.Value] = append(p.hand[c.Value], c)
 	if len(p.hand[c.Value]) == 4 {
 		delete(p.hand, c.Value)
 		p.points++
-		return c.Value
+		return c.Value, nil
 	}
-	return ""
+	return "", nil
 }
 
 // Represents the hand as a one line string

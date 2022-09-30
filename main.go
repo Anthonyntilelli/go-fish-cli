@@ -7,13 +7,13 @@ import (
 	"math/rand"
 	"time"
 
+	computerplayer "github.com/Anthonyntilelli/go-fish/computer_player"
 	"github.com/Anthonyntilelli/go-fish/deck"
-	"github.com/Anthonyntilelli/go-fish/player"
 )
 
 func main() {
 	rand.Seed(time.Now().UnixNano())
-	cards := make([]deck.Card, 5)
+	var cards []deck.Card
 	d := deck.New()
 	for i := 0; i != 5; i++ {
 		c, err := d.DrawCard()
@@ -23,15 +23,18 @@ func main() {
 		cards = append(cards, c)
 	}
 
-	p1, err := player.New(1, cards)
+	cp, err := computerplayer.New(1, cards)
 	if err != nil {
 		log.Fatal(err)
 	}
-	for i := 0; i != 24; i++ {
+	for i := 0; i != 25; i++ {
 		c, _ := d.DrawCard()
-		p1.InsertCard(c)
+		_, err = cp.InsertCard(c)
+		if err != nil {
+			log.Fatal(err)
+		}
 	}
-	fmt.Println(p1.Hand())
-	fmt.Println(p1.RemoveCards("2"))
-	fmt.Println(p1.Hand())
+	fmt.Println(cp.Hand())
+	fmt.Println(cp.Points())
+
 }
