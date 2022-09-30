@@ -3,6 +3,7 @@ package main
 // "github.com/Anthonyntilelli/go-fish/deck"
 import (
 	"fmt"
+	"log"
 	"math/rand"
 	"time"
 
@@ -12,8 +13,20 @@ import (
 
 func main() {
 	rand.Seed(time.Now().UnixNano())
+	cards := make([]deck.Card, 5)
 	d := deck.New()
-	p1 := player.New(1)
+	for i := 0; i != 5; i++ {
+		c, err := d.DrawCard()
+		if err != nil {
+			log.Fatal(err)
+		}
+		cards = append(cards, c)
+	}
+
+	p1, err := player.New(1, cards)
+	if err != nil {
+		log.Fatal(err)
+	}
 	for i := 0; i != 24; i++ {
 		c, _ := d.DrawCard()
 		p1.InsertCard(c)

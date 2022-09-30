@@ -5,22 +5,32 @@
 package player
 
 import (
+	"errors"
+
 	"github.com/Anthonyntilelli/go-fish/deck"
 )
 
 type Player struct {
-	Id     int
+	Id     uint
 	hand   map[string][]deck.Card
-	points int
+	points uint
 }
 
-// Returns a Player with the specified id, an empty hand and 0 points.
-func New(id int) Player {
+// Returns a Player with the specified id, a starting hand and 0 points.
+//
+// An error is returned when the starting hand is empty
+func New(id uint, starting_hand []deck.Card) (Player, error) {
 	var p Player
+	if id <= 0 || len(starting_hand) == 0 {
+		return p, errors.New("Invalid Player options")
+	}
 	p.Id = id
 	p.points = 0
 	p.hand = make(map[string][]deck.Card)
-	return p
+	for _, c := range starting_hand {
+		p.InsertCard(c)
+	}
+	return p, nil
 }
 
 // Inserts a new card into the hand of the player. If the card is part of a 4 set,
@@ -52,13 +62,15 @@ func (p *Player) Hand() string {
 }
 
 // Prints current points
-func (p *Player) Points() int {
+func (p *Player) Points() uint {
 	return p.points
 }
 
 // Removed a set of cards from Players hand by value
+//
 // Returns cards removed from hand and If card was removed.
-// card will be blank if player does not have that card value
+//
+// Card will be blank if player does not have that card value.
 func (p *Player) RemoveCards(cardValue string) ([]deck.Card, bool) {
 	contents, ok := p.hand[cardValue]
 	if !ok {
