@@ -5,6 +5,7 @@ package computerplayer
 
 import (
 	"log"
+	"math/rand"
 
 	"github.com/Anthonyntilelli/go-fish/deck"
 	"github.com/Anthonyntilelli/go-fish/player"
@@ -40,11 +41,38 @@ func (cp *ComputerPlayer) Ask(cardValue string) ([]deck.Card, bool) {
 	return cards, found
 }
 
-//TODO: GUESS and receive cards function
+// Chooses a card value from memory and hand or select a card value at random from the hand
+func (cp *ComputerPlayer) Guess() string {
+	var foundList []string
+	var hnd []string
+
+	// Check Memory for cards in hand
+	memory := cp.cardListFromMemory()
+	for _, c := range memory {
+		cValue := string(c)
+		_, found := cp.Hand[cValue] // Checking if card value is in hand
+		if found {
+			foundList = append(foundList, cValue)
+		}
+	}
+
+	// Item found in list
+	if foundList != nil {
+		i := rand.Intn(len(foundList)-0) + 0 // (MAX-MIN)-MIN
+		cp.modifyMemory(foundList[i], false)
+		return foundList[i]
+	}
+	// Nothing found in hand
+	for k := range cp.Hand {
+		hnd = append(hnd, k)
+	}
+	j := rand.Intn(len(hnd)-0) + 0 // (MAX-MIN)-MIN
+	return hnd[j]
+}
 
 // Adds or removes the card value from memory, translates standard card values only
 //
-// Panics on invalid card
+// Panics on invalid card (Capital Letters Only)
 func (cp *ComputerPlayer) modifyMemory(cardValue string, has bool) {
 	switch cardValue {
 	case "A":
@@ -76,4 +104,50 @@ func (cp *ComputerPlayer) modifyMemory(cardValue string, has bool) {
 	default:
 		log.Fatalln("Invalid card called in modifyMemory function")
 	}
+}
+
+// Creates a string based on memory
+func (cp *ComputerPlayer) cardListFromMemory() string {
+	cardList := ""
+
+	if cp.memory[0] {
+		cardList += "A"
+	}
+	if cp.memory[1] {
+		cardList += "2"
+	}
+	if cp.memory[2] {
+		cardList += "3"
+	}
+	if cp.memory[3] {
+		cardList += "4"
+	}
+	if cp.memory[4] {
+		cardList += "5"
+	}
+	if cp.memory[5] {
+		cardList += "6"
+	}
+	if cp.memory[6] {
+		cardList += "7"
+	}
+	if cp.memory[7] {
+		cardList += "8"
+	}
+	if cp.memory[8] {
+		cardList += "9"
+	}
+	if cp.memory[9] {
+		cardList += "10"
+	}
+	if cp.memory[10] {
+		cardList += "J"
+	}
+	if cp.memory[11] {
+		cardList += "Q"
+	}
+	if cp.memory[12] {
+		cardList += "K"
+	}
+	return cardList
 }

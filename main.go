@@ -27,14 +27,19 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	for i := 0; i != 25; i++ {
+
+	// Ask BEFORE more cards added
+	fmt.Println(cp.Ask("3"))
+	fmt.Println(cp.Ask("8"))
+	fmt.Println(cp.Ask("5"))
+
+	for i := 0; i != 15; i++ {
 		c, _ := d.DrawCard()
 		_, err = cp.InsertCard(c)
 		if err != nil {
 			log.Fatal(err)
 		}
 	}
-	fmt.Println(cp.Hand())
-	fmt.Println(cp.Points())
-
+	fmt.Println(cp.DisplayHand())
+	fmt.Println(cp.Guess())
 }

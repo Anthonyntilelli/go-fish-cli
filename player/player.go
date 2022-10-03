@@ -12,11 +12,11 @@ import (
 
 type Player struct {
 	Id     uint
-	hand   map[string][]deck.Card
+	Hand   map[string][]deck.Card
 	points uint
 }
 
-// Returns a Player with the specified id, a starting hand and 0 points.
+// Returns a Player with the specified id, a starting Hand and 0 points.
 //
 // An error is returned when the starting hand is empty
 func New(id uint, starting_hand []deck.Card) (Player, error) {
@@ -26,7 +26,7 @@ func New(id uint, starting_hand []deck.Card) (Player, error) {
 	}
 	p.Id = id
 	p.points = 0
-	p.hand = make(map[string][]deck.Card)
+	p.Hand = make(map[string][]deck.Card)
 	for _, c := range starting_hand {
 		if _, err := p.InsertCard(c); err != nil {
 			return Player{}, err
@@ -43,9 +43,9 @@ func (p *Player) InsertCard(c deck.Card) (string, error) {
 	if c.Value == "" {
 		return "", errors.New("attempting to an insert invalid card")
 	}
-	p.hand[c.Value] = append(p.hand[c.Value], c)
-	if len(p.hand[c.Value]) == 4 {
-		delete(p.hand, c.Value)
+	p.Hand[c.Value] = append(p.Hand[c.Value], c)
+	if len(p.Hand[c.Value]) == 4 {
+		delete(p.Hand, c.Value)
 		p.points++
 		return c.Value, nil
 	}
@@ -53,9 +53,9 @@ func (p *Player) InsertCard(c deck.Card) (string, error) {
 }
 
 // Represents the hand as a one line string
-func (p *Player) Hand() string {
+func (p *Player) DisplayHand() string {
 	str := "[ "
-	for k, v := range p.hand {
+	for k, v := range p.Hand {
 		str += k + ":"
 		for _, val := range v {
 			str += val.Suit
@@ -78,10 +78,10 @@ func (p *Player) Points() uint {
 //
 // Card will be blank if player does not have that card value.
 func (p *Player) RemoveCards(cardValue string) ([]deck.Card, bool) {
-	contents, ok := p.hand[cardValue]
+	contents, ok := p.Hand[cardValue]
 	if !ok {
 		return []deck.Card{}, false
 	}
-	delete(p.hand, cardValue)
+	delete(p.Hand, cardValue)
 	return contents, true
 }
