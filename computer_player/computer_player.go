@@ -19,7 +19,7 @@ type ComputerPlayer struct {
 // Returns a Computer player and error
 //
 // An error is returned when the starting hand is empty.
-func New(player_id uint, starting_hand []deck.Card) (ComputerPlayer, error) {
+func New(player_id int, starting_hand []deck.Card) (ComputerPlayer, error) {
 	var cp ComputerPlayer
 	var err error
 

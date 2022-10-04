@@ -25,6 +25,37 @@ func drawMultipleCards(count int, d *deck.Deck) []deck.Card {
 	return cards
 }
 
+// Draw card from the deck and adds it to the players hand.
+// It will also print all related text to the terminal.
+func goFish(d *deck.Deck, p *player.Player) {
+	if d.IsDeckEmpty() {
+		fmt.Println("The deck is empty.")
+		return
+	}
+	pl := "Player " + strconv.Itoa(p.Id)
+	fmt.Println(pl + " must GO FISH")
+	c, _ := d.DrawCard()
+	fmt.Println(pl + " picked up a " + c.Value + c.Suit)
+	cv, _ := p.InsertCard(c)
+	if cv != "" {
+		fmt.Println(pl + " gained a Point :-)")
+		fmt.Println("Point: " + strconv.Itoa(p.Points()))
+	}
+}
+
+// transfers cards to players hand, and outputs points to terminal if needed.
+func transferCards(p *player.Player, cards []deck.Card) {
+	pl := "Player " + strconv.Itoa(p.Id)
+	fmt.Println(pl + " guessed Correctly ")
+	for _, c := range cards {
+		cv, _ := p.InsertCard(c)
+		if cv != "" {
+			fmt.Println("You gained a Point :-)")
+			fmt.Println("Points are now " + strconv.Itoa(p.Points()))
+		}
+	}
+}
+
 func main() {
 	// Initialize Game
 	rand.Seed(time.Now().UnixNano())
@@ -40,6 +71,7 @@ func main() {
 		log.Fatal(err)
 	}
 
+	// Game Loop
 	var input string
 	for input != "exit" {
 		fmt.Println("Your hand is: " + humanPlayer.DisplayHand())
@@ -58,36 +90,30 @@ func main() {
 			continue
 		}
 		cards, ok := compPlayer.Ask(input)
-		if !ok { // Go Fish
-			fmt.Println("Card not in other players hand.")
-			if !deck.IsDeckEmpty() {
-				fmt.Println("You must GO FISH")
-				c, _ := deck.DrawCard()
-				fmt.Println("You picked up a " + c.Value + c.Suit)
-				cv, _ := humanPlayer.InsertCard(c)
-				if cv != "" {
-					fmt.Println("You gained a Point :-)")
-					fmt.Println("Points are now " + strconv.Itoa(humanPlayer.Points()))
-				}
-			} else {
-				fmt.Println("The deck is empty.")
-			}
-		} else { // Card found
-			fmt.Println("The other player gave you their card(s)")
-			for _, c := range cards {
-				cv, _ := humanPlayer.InsertCard(c)
-				if cv != "" {
-					fmt.Println("You gained a Point :-)")
-					fmt.Println("Points are now " + strconv.Itoa(humanPlayer.Points()))
-				}
-			}
+		if ok { // Card found
+			transferCards(&humanPlayer, cards)
+		} else { // Go Fish
+			goFish(&deck, &humanPlayer)
 		}
 
-		// Computer Turn
+		// // Computer Turn
 		// guess := compPlayer.Guess()
-		// cards, ok := humanPlayer.RemoveCards(guess)
+		// fmt.Println("The Computer player Guesses " + guess)
+		// cards, ok = humanPlayer.RemoveCards(guess)
+		// if ok { // card found
+		// 	fmt.Println("Your cards were removed from your hand.")
+		// 	for _, c := range cards {
+		// 		cv, _ := humanPlayer.InsertCard(c)
+		// 		if cv != "" {
+		// 			fmt.Println("Computer player gained a Point :-o")
+		// 			fmt.Println("Points are now " + strconv.Itoa(compPlayer.Points()))
+		// 		}
+		// 	}
+		// } else { // compPlayer GO FISH
 
-		if deck.IsDeckEmpty() && (compPlayer.Hand == nil || humanPlayer.Hand == nil) {
+		// }
+
+		if (deck.IsDeckEmpty() && (compPlayer.EmptyHand() || humanPlayer.EmptyHand())) || (compPlayer.EmptyHand() && humanPlayer.EmptyHand()) {
 			fmt.Println("GAME IS OVER!")
 			if humanPlayer.Points() == compPlayer.Points() {
 				fmt.Println("GAME IS A DRAW")
@@ -96,6 +122,7 @@ func main() {
 			} else {
 				fmt.Println("You Lost :-(")
 			}
+			break
 		}
 
 		fmt.Println("///------------------------------------------------------------------------------------------------------///")

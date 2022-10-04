@@ -11,7 +11,7 @@ import (
 )
 
 type Player struct {
-	Id     uint
+	Id     int
 	Hand   map[string][]deck.Card // Use DisplayHand() to print hand
 	points int
 }
@@ -19,7 +19,7 @@ type Player struct {
 // Returns a Player with the specified id, a starting Hand and 0 points.
 //
 // An error is returned when the starting hand is empty
-func New(id uint, starting_hand []deck.Card) (Player, error) {
+func New(id int, starting_hand []deck.Card) (Player, error) {
 	var p Player
 	if id <= 0 || len(starting_hand) == 0 {
 		return p, errors.New("invalid Player options")
@@ -91,4 +91,9 @@ func (p *Player) RemoveCards(cardValue string) ([]deck.Card, bool) {
 func (p *Player) CheckHand(cardValue string) bool {
 	_, ok := p.Hand[cardValue]
 	return ok
+}
+
+// returns if the players hand is empty
+func (p *Player) EmptyHand() bool {
+	return len(p.Hand) == 0
 }
