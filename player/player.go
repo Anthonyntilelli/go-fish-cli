@@ -12,8 +12,8 @@ import (
 
 type Player struct {
 	Id     uint
-	Hand   map[string][]deck.Card
-	points uint
+	Hand   map[string][]deck.Card // Use DisplayHand() to print hand
+	points int
 }
 
 // Returns a Player with the specified id, a starting Hand and 0 points.
@@ -68,7 +68,7 @@ func (p *Player) DisplayHand() string {
 }
 
 // Prints current points
-func (p *Player) Points() uint {
+func (p *Player) Points() int {
 	return p.points
 }
 
@@ -84,4 +84,11 @@ func (p *Player) RemoveCards(cardValue string) ([]deck.Card, bool) {
 	}
 	delete(p.Hand, cardValue)
 	return contents, true
+}
+
+// Checks hand for a particular card value and returns if card is there.
+// This method does not remove the card from the hand.
+func (p *Player) CheckHand(cardValue string) bool {
+	_, ok := p.Hand[cardValue]
+	return ok
 }

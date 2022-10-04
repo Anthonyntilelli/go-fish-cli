@@ -16,6 +16,7 @@ const (
 	Spades   = "♠"
 )
 
+// A single card from the deck
 type Card struct {
 	Value, Suit string
 }
