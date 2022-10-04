@@ -4,7 +4,6 @@
 package computerplayer
 
 import (
-	"log"
 	"math/rand"
 
 	"github.com/Anthonyntilelli/go-fish/deck"
@@ -42,9 +41,15 @@ func (cp *ComputerPlayer) Ask(cardValue string) ([]deck.Card, bool) {
 }
 
 // Chooses a card value from memory and hand or select a card value at random from the hand
+//
+// It panics when hand is empty
 func (cp *ComputerPlayer) Guess() string {
 	var foundList []string
 	var hnd []string
+
+	if cp.EmptyHand() {
+		panic("Cannot guess on an empty hand")
+	}
 
 	// Check Memory for cards in hand
 	memory := cp.cardListFromMemory()
@@ -102,7 +107,7 @@ func (cp *ComputerPlayer) modifyMemory(cardValue string, has bool) {
 	case "K":
 		cp.memory[12] = has
 	default:
-		log.Fatalln("Invalid card called in modifyMemory function")
+		panic("Invalid card called in modifyMemory function")
 	}
 }
 
