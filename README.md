@@ -1,2 +1,3 @@
 # go-fish
-Golang CLI GAME of GOfish
+
+Golang CLI GAME of GO fish

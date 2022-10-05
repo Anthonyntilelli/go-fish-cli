@@ -5,6 +5,7 @@ import (
 	"log"
 	"math/rand"
 	"strconv"
+	"strings"
 	"time"
 
 	computerplayer "github.com/Anthonyntilelli/go-fish/computer_player"
@@ -101,13 +102,15 @@ func main() {
 
 	// Game Loop
 	var input string
-	for input != "exit" {
+	for input != "EXIT" {
 		fmt.Println("Your hand is: " + humanPlayer.DisplayHand())
 		fmt.Println("Enter a card value to ask other player (or type exit to leave): ")
 
 		// Players turn
 		fmt.Scanln(&input)
-		if input == "exit" {
+		input = strings.ToUpper(input)
+
+		if input == "EXIT" {
 			break
 		}
 
@@ -126,6 +129,8 @@ func main() {
 		if Check(&humanPlayer, &compPlayer.Player, &deck) {
 			break
 		}
+
+		fmt.Println("Your hand is: " + humanPlayer.DisplayHand())
 
 		// Computer Turn
 		guess := compPlayer.Guess()
